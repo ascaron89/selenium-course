@@ -1,5 +1,3 @@
-import time
-
 from tests.data.admin_selectors import ITEM_MENU, ITEM_UNDER_MENU, ELEMENT_TITLE_H1
 from tests.data.settings import URL_SHOP
 from tests.data.shop_selectors import ITEM_PRODUCT, ITEM_STICKER
