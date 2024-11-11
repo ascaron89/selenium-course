@@ -24,4 +24,4 @@ def test_check_sticker(driver_chrome):
     driver_chrome.get(URL_SHOP)
     products = driver_chrome.find_elements(*ITEM_PRODUCT)
     for product in products:
-        product.find_element(*ITEM_STICKER)
+        assert len(product.find_elements(*ITEM_STICKER)) == 1, "Wrong number of stickers"
