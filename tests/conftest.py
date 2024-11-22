@@ -1,6 +1,9 @@
 import pytest
 from selenium import webdriver
 from enum import Enum
+
+from selenium.webdriver.chrome.webdriver import WebDriver
+
 from tests.data.admin_selectors import INPUT_USER_NAME, INPUT_USER_PASSWORD, BUTTON_CONFIRM, ICON_LOGOUT
 from tests.data.settings import URL_ADMIN, ADMIN_NAME, ADMIN_PASSWORD
 
@@ -23,17 +26,17 @@ def create_driver(request):
     return _create_driver
 
 @pytest.fixture
-def driver_chrome(request, create_driver):
+def driver_chrome(request, create_driver) -> WebDriver:
 
     return create_driver(DriverType.CHROME)
 
 @pytest.fixture
-def driver_firefox(request, create_driver):
+def driver_firefox(request, create_driver) -> WebDriver:
 
     return create_driver(DriverType.FIREFOX)
 
 @pytest.fixture
-def driver_safari(request, create_driver):
+def driver_safari(request, create_driver) -> WebDriver:
 
     return create_driver(DriverType.SAFARI)
 

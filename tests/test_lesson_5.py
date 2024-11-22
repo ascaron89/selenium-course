@@ -1,5 +1,10 @@
+from time import sleep
+
+import pytest
+
 from elements.table import Table
-from tests.data.settings import COUNTRIES_PAGE, GEO_ZONES_PAGE
+from tests.conftest import driver_chrome, driver_firefox, driver_safari
+from tests.data.settings import COUNTRIES_PAGE, GEO_ZONES_PAGE, URL_SHOP
 
 
 def test_sorting_countries_zones(driver_chrome, admin_login):
@@ -22,6 +27,7 @@ def test_sorting_countries_zones(driver_chrome, admin_login):
             states = states_table.get_table_data()
             states_name = [state["Name"] for state in states]
             assert states_name == sorted(states_name), "Sort error"
+
             driver_chrome.back()
 
 def test_sorting_geo_zones(driver_chrome, admin_login):
@@ -39,4 +45,14 @@ def test_sorting_geo_zones(driver_chrome, admin_login):
             states = states_table.get_table_data()
             states_name = [state["Zone"] for state in states]
             assert states_name == sorted(states_name), "Sort error"
+
             driver_chrome.back()
+
+# @pytest.mark.parametrize(
+#     'driver', [driver_firefox, driver_chrome, driver_safari],
+#     ids=['driver_chrome', 'driver_firefox', 'driver_firefox']
+# )
+def test_product_card(driver_firefox, admin_login):
+    driver_firefox.get(URL_SHOP)
+    print(type(driver_firefox))
+    sleep(2)
