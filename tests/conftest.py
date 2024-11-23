@@ -1,54 +1,55 @@
+from collections.abc import Callable
+from typing import Union
+
 import pytest
-from selenium import webdriver
 from enum import Enum
 
-from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver import Chrome, Firefox, Safari
+from selenium.webdriver.ie.webdriver import WebDriver
 
+from elements.driver import Driver, DriverType
 from tests.data.admin_selectors import INPUT_USER_NAME, INPUT_USER_PASSWORD, BUTTON_CONFIRM, ICON_LOGOUT
 from tests.data.settings import URL_ADMIN, ADMIN_NAME, ADMIN_PASSWORD
 
 
-class DriverType(Enum):
-    CHROME = webdriver.Chrome
-    FIREFOX = webdriver.Firefox
-    SAFARI = webdriver.Safari
+@pytest.fixture(scope="class")
+def chrome_driver(request) -> Chrome:
+    driver = Driver(DriverType.CHROME).driver
+    request.addfinalizer(driver.quit)
+    return driver
+
+@pytest.fixture(scope="class")
+def firefox_driver(request) -> Firefox:
+    driver = Driver(DriverType.FIREFOX).driver
+    request.addfinalizer(driver.quit)
+    return driver
+
+@pytest.fixture(scope="class")
+def safari_driver(request) -> Safari:
+    driver = Driver(DriverType.SAFARI).driver
+    request.addfinalizer(driver.quit)
+    return driver
 
 
 @pytest.fixture
-def create_driver(request):
-
-    def _create_driver(driver_type):
-        driver = driver_type.value()
-        request.addfinalizer(driver.quit)
-
-        return driver
-
-    return _create_driver
-
-@pytest.fixture
-def driver_chrome(request, create_driver) -> WebDriver:
-
-    return create_driver(DriverType.CHROME)
-
-@pytest.fixture
-def driver_firefox(request, create_driver) -> WebDriver:
-
-    return create_driver(DriverType.FIREFOX)
-
-@pytest.fixture
-def driver_safari(request, create_driver) -> WebDriver:
-
-    return create_driver(DriverType.SAFARI)
-
-@pytest.fixture
-def admin_login(request, driver_chrome):
+def admin_login(request, chrome_driver):
 
     def _logout():
-        driver_chrome.find_element(*ICON_LOGOUT).click()
+        chrome_driver.find_element(*ICON_LOGOUT).click()
 
-    driver_chrome.get(URL_ADMIN)
-    driver_chrome.find_element(*INPUT_USER_NAME).send_keys(ADMIN_NAME)
-    driver_chrome.find_element(*INPUT_USER_PASSWORD).send_keys(ADMIN_PASSWORD)
-    driver_chrome.find_element(*BUTTON_CONFIRM).click()
+    chrome_driver.get(URL_ADMIN)
+    chrome_driver.find_element(*INPUT_USER_NAME).send_keys(ADMIN_NAME)
+    chrome_driver.find_element(*INPUT_USER_PASSWORD).send_keys(ADMIN_PASSWORD)
+    chrome_driver.find_element(*BUTTON_CONFIRM).click()
 
     request.addfinalizer(_logout)
+
+@pytest.fixture
+def custom_admin_login(request):
+    def _login(driver: WebDriver) -> Callable[WebDriver]:
+        driver.get(URL_ADMIN)
+        driver.find_element(*INPUT_USER_NAME).send_keys(ADMIN_NAME)
+        driver.find_element(*INPUT_USER_PASSWORD).send_keys(ADMIN_PASSWORD)
+        driver.find_element(*BUTTON_CONFIRM).click()
+
+    return _login
