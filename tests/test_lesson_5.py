@@ -11,8 +11,8 @@ from tests.data.settings import (
 )
 from tests.data.shop_selectors import (
     BOX_CAMPAIGNS,
-    CARD,
-    CARD_NAME,
+    ITEM_CARD,
+    ITEM_CARD_NAME,
     ITEM_PRODUCT,
     ITEM_NAME,
     ITEM_PRICE,
@@ -90,8 +90,8 @@ class TestLesson5:
 
         product.click()
         sleep(1) # Без этого костыля NoSuchFrameException на Safari, явные и не явные ожидания не дают результата
-        card = driver.find_element(*CARD)
-        name = card.find_element(*CARD_NAME)
+        card = driver.find_element(*ITEM_CARD)
+        name = card.find_element(*ITEM_CARD_NAME)
         price = card.find_element(*ITEM_PRICE)
         camp_price = card.find_element(*ITEM_CAMPAIGN_PRICE)
 

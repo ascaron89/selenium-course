@@ -31,6 +31,12 @@ ITEM_PRICE = (By.XPATH, './/*[@class="regular-price"]')
 ITEM_CAMPAIGN_PRICE = (By.XPATH, './/*[@class="campaign-price"]')
 
 # ITEM CARD
-CARD = (By.XPATH, '//div[@id="box-product"]')
-CARD_NAME = (By.XPATH, './/h1')
+ITEM_CARD = (By.XPATH, '//div[@id="box-product"]')
+ITEM_CARD_NAME = (By.XPATH, './/h1')
+BUTTON_ADD_TO_CART = (By.XPATH, '//button[@name="add_cart_product"]')
+SELECT_CARD_SIZE = (By.XPATH, '//select[@name="options[Size]"]')
+
+# CART
+ITEM_QUANTITY_CART = (By.XPATH, '//span[@class="quantity"]')
+BUTTON_REMOVE_PRODUCT_FROM_CART = (By.XPATH, '//button[@name="remove_cart_item"]')
 
