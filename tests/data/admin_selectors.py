@@ -10,5 +10,5 @@ ICON_LOGOUT = (By.XPATH, '//a[@title="Logout"]')
 ITEM_MENU = (By.XPATH, '//ul[@id="box-apps-menu"]/li')
 ITEM_UNDER_MENU = (By.XPATH, '//ul[@class="docs"]/li')
 
-# Страница
+# Общие элементы Страницы
 ELEMENT_TITLE_H1 = (By.XPATH, '//*[@id="content"]//h1')
