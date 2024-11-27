@@ -12,3 +12,5 @@ ITEM_UNDER_MENU = (By.XPATH, '//ul[@class="docs"]/li')
 
 # Общие элементы Страницы
 ELEMENT_TITLE_H1 = (By.XPATH, '//*[@id="content"]//h1')
+ELEMENT_FORM_POST = (By.XPATH, '//form[@method="post"]')
+LINK_ON_NEW_PAGE = (By.XPATH, './/a[@target="_blank"]')
