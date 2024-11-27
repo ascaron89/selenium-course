@@ -1,10 +1,12 @@
 import time
 from pathlib import Path
 
+import pytest
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from elements.table import Table
+from tests.conftest import chrome_driver
 
 from tests.data.admin_selectors import INPUT_USER_PASSWORD
 from tests.data.catalog_selectors import (
@@ -32,7 +34,7 @@ from tests.data.catalog_selectors import (
     INPUT_PRODUCT_PRICE_EUR,
     BUTTON_SAVE_PRODUCT
 )
-from tests.data.settings import URL_SHOP, URL_ADMIN, CATALOG_PAGE
+from tests.data.settings import URL_SHOP, CATALOG_PAGE
 from tests.data.shop_selectors import (
     LINK_USER_CREATE,
     LINK_USER_LOGOUT,
@@ -47,14 +49,19 @@ from tests.data.shop_selectors import (
     INPUT_CREATE_PASSWORD,
     INPUT_CREATE_CONFIRM_PASSWORD,
     INPUT_CREATE_PHONE,
-    SELECT_CREATE_COUNTRY,
     SELECT_CREATE_STATE,
-    BUTTON_CREATE_ACCOUNT
+    BUTTON_CREATE_ACCOUNT, ITEM_OPENER_SELECT_CREATE_COUNTRY, ITEM_OPTION_US
 )
 
 class TestLesson6:
-    def test_create_user(self, chrome_driver):
-        driver = chrome_driver
+    @pytest.mark.parametrize(
+        'driver', ['chrome_driver', 'firefox_driver', 'safari_driver'],
+        ids=['chrome', 'firefox', 'safari']
+    )
+    def test_create_user(self, request, driver):
+
+        driver = request.getfixturevalue(driver)
+        wait = WebDriverWait(driver, 10)
         driver.get(URL_SHOP)
         password = str(int(time.time()))
         email = f'test@{password}test.com'
@@ -63,14 +70,16 @@ class TestLesson6:
         driver.find_element(*LINK_USER_CREATE).click()
 
         # Заполнение формы создания пользователя
-        driver.find_element(*INPUT_CREATE_FIRST_NAME).send_keys('test_first_name')
+
+        wait.until(EC.visibility_of_element_located(INPUT_CREATE_FIRST_NAME)).send_keys('test_first_name')
         driver.find_element(*INPUT_CREATE_LAST_NAME).send_keys('test_last_name')
         driver.find_element(*INPUT_CREATE_ADDRESS_1).send_keys('test_address_1')
         driver.find_element(*INPUT_CREATE_POST_CODE).send_keys('12345')
         driver.find_element(*INPUT_CREATE_CITY).send_keys('test_city')
         driver.find_element(*INPUT_CREATE_PHONE).send_keys('+11234567890')
-        Select(driver.find_element(*SELECT_CREATE_COUNTRY)).select_by_value('US')
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(SELECT_CREATE_STATE))
+        driver.find_element(*ITEM_OPENER_SELECT_CREATE_COUNTRY).click()
+        driver.find_element(*ITEM_OPTION_US).click()
+        wait.until(EC.element_to_be_clickable(SELECT_CREATE_STATE))
         Select(driver.find_element(*SELECT_CREATE_STATE)).select_by_value('AK')
         driver.find_element(*INPUT_CREATE_EMAIL).send_keys(email)
         driver.find_element(*INPUT_CREATE_PASSWORD).send_keys(password)
@@ -78,15 +87,15 @@ class TestLesson6:
         driver.find_element(*BUTTON_CREATE_ACCOUNT).click()
 
         # Разлогинивание пользователя
-        driver.find_element(*LINK_USER_LOGOUT).click()
+        wait.until(EC.visibility_of_element_located(LINK_USER_LOGOUT)).click()
 
         # Авторизация созданного пользователя
-        driver.find_element(*INPUT_USER_EMAIL).send_keys(email)
+        wait.until(EC.visibility_of_element_located(INPUT_USER_EMAIL)).send_keys(email)
         driver.find_element(*INPUT_USER_PASSWORD).send_keys(password)
         driver.find_element(*BUTTON_USER_LOGIN).click()
 
         # Повторное разлогинивание пользователя
-        driver.find_element(*LINK_USER_LOGOUT).click()
+        wait.until(EC.visibility_of_element_located(LINK_USER_LOGOUT)).click()
 
     def test_create_product(self, chrome_driver, admin_login):
         driver = chrome_driver
@@ -99,7 +108,7 @@ class TestLesson6:
 
         # Заполняем вкладку General
         driver.find_element(*TAB_GENERAL).click()
-        wait.until(EC.element_to_be_clickable(RADIO_PRODUCT_STATUS_ENABLE))
+        wait.until(EC.visibility_of_element_located(RADIO_PRODUCT_STATUS_ENABLE))
         driver.find_element(*RADIO_PRODUCT_STATUS_ENABLE).click()
         driver.find_element(*INPUT_PRODUCT_NAME).send_keys("test_duck")
         driver.find_element(*INPUT_PRODUCT_CODE).send_keys("1234567890")
@@ -112,7 +121,7 @@ class TestLesson6:
 
         # Заполняем вкладку Information
         driver.find_element(*TAB_INFORMATION).click()
-        wait.until(EC.element_to_be_clickable(SELECT_PRODUCT_MANUFACTURE))
+        wait.until(EC.visibility_of_element_located(SELECT_PRODUCT_MANUFACTURE))
         Select(driver.find_element(*SELECT_PRODUCT_MANUFACTURE)).select_by_visible_text("ACME Corp.")
         driver.find_element(*INPUT_PRODUCT_KEYWORDS).send_keys("duck")
         driver.find_element(*INPUT_PRODUCT_SHORT_DESCRIPTION).send_keys("test duck")
@@ -122,7 +131,7 @@ class TestLesson6:
 
         # Заполняем вкладку Price
         driver.find_element(*TAB_PRICE).click()
-        wait.until(EC.element_to_be_clickable(INPUT_PRODUCT_PURCHASE_PRICE))
+        wait.until(EC.visibility_of_element_located(INPUT_PRODUCT_PURCHASE_PRICE))
         driver.find_element(*INPUT_PRODUCT_PURCHASE_PRICE).clear()
         driver.find_element(*INPUT_PRODUCT_PURCHASE_PRICE).send_keys("15")
         Select(driver.find_element(*SELECT_PRODUCT_PURCHASE_CURRENCY)).select_by_value("USD")
