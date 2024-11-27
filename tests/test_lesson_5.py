@@ -83,10 +83,13 @@ class TestLesson5:
         color_price_main = price.value_of_css_property("color").strip('rgba()').replace(' ', '').split(',')
         decoration_price_main = price.value_of_css_property("text-decoration").split()[0]
         color_camp_price_main = camp_price.value_of_css_property("color").strip('rgba()').replace(' ', '').split(',')
+        size_price_main = price.value_of_css_property("font-size").strip('px')
+        size_camp_price_main = camp_price.value_of_css_property("font-size").strip('px')
 
         assert color_price_main[0] == color_price_main[1] == color_price_main[2], "Wrong price color"
         assert decoration_price_main == 'line-through', "The price is not decorated"
         assert color_camp_price_main[1] == '0' and color_camp_price_main[2] == '0', "Wrong campaign price color"
+        assert float(size_price_main) < float(size_camp_price_main), "Wrong price size"
 
         product.click()
         sleep(1) # Без этого костыля NoSuchFrameException на Safari, явные и не явные ожидания не дают результата
@@ -103,9 +106,12 @@ class TestLesson5:
         color_price_card = price.value_of_css_property("color").strip('rgba()').replace(' ', '').split(',')
         decoration_price_card = price.value_of_css_property("text-decoration").split()[0]
         color_camp_price_card = camp_price.value_of_css_property("color").strip('rgba()').replace(' ', '').split(',')
+        size_price_card = price.value_of_css_property("font-size").strip('px')
+        size_camp_price_card = camp_price.value_of_css_property("font-size").strip('px')
 
         assert color_price_card[0] == color_price_card[1] == color_price_card[2], "Wrong price color"
         assert decoration_price_card == 'line-through', "The price is not decorated"
         assert color_camp_price_card[1] == '0' and color_camp_price_card[2] == '0', "Wrong campaign price color"
+        assert float(size_price_card) < float(size_camp_price_card), "Wrong price size"
 
         assert text_main == text_card, "Text data does not match"
